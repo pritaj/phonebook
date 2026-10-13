@@ -1,0 +1,28 @@
+{
+  "name": "PhoneBook",
+  "dockerComposeFile": "compose.yaml",
+  "service": "devcontainer",
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
+  "overrideCommand": true,
+  "postCreateCommand": "npm install",
+  "remoteUser": "node",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      },
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "ms-azuretools.vscode-containers",
+        "esbenp.prettier-vscode",
+        "serhioromano.vscode-gitflow",
+        "Vue.volar",
+        "ms-vscode.vscode-typescript-next",
+        "bradlc.vscode-tailwindcss",
+        "EditorConfig.EditorConfig",
+        "streetsidesoftware.code-spell-checker"
+      ]
+    }
+  }
+}

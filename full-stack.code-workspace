@@ -1,0 +1,17 @@
+{
+  "folders": [
+    {
+      "name": "🔧 API",
+      "path": "apps/api"
+    },
+    {
+      "name": "🌐 WEB-APP",
+      "path": "apps/web-app"
+    },
+    {
+      "name": "🫜 ROOT",
+      "path": "."
+    },
+  ],
+  "settings": {}
+}

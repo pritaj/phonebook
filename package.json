@@ -1,0 +1,21 @@
+{
+  "name": "phonebook",
+  "version": "0.0.1",
+  "description": "Phonebook web application (thesis project)",
+  "private": true,
+  
+  "license": "UNLICENSED",
+  "author": "Paska Rita Júlia",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "npm run start:dev -w=api & npm run dev -w=web-app & wait",
+    "build": "npm run build -w=api && npm run build -w=web-app"
+  },
+  "workspaces": [
+    "apps/*"
+  ],
+  "dependencies": {
+    "pinia": "^4.0.3"
+  }
+  
+}
