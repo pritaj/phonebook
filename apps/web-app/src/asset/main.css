@@ -2,6 +2,7 @@
 @import "tailwindcss-primeui";
 @import "primeicons/primeicons.css";
 @import "@fontsource-variable/material-symbols-rounded/full.css";
+@import "flag-icons/css/flag-icons.min.css";
 
 .material-symbols-outlined {
   font-family: "Material Symbols Rounded Variable";
