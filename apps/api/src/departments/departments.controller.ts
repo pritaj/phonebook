@@ -17,6 +17,11 @@ export class DepartmentsController {
     return this.departmentsService.findAll();
   }
 
+  @Get('tree')
+  findTree(){
+    return this.departmentsService.findTree();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.departmentsService.findOne(+id);
