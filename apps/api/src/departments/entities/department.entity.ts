@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Department {
@@ -10,4 +10,11 @@ export class Department {
 
   @Column({type: 'varchar', nullable:true}) 
   nameEn: string | null;
+
+  @ManyToOne(() => Department, {nullable:true})
+  parent: Department | null;
+
+  @OneToMany(() => Department, (department) => department.parent)
+  children: Department[];
+  
 }
