@@ -20,6 +20,27 @@ export class DepartmentsService {
     return this.departmentsRepository.find();
   }
 
+  async findTree() {
+    const departments = await this.departmentsRepository.find();
+    const byId = new Map<number, Department>();
+    departments.forEach((department) => {
+      department.children = [];
+      byId.set(department.id, department);
+    });
+    const roots: Department[] = [];
+    departments.forEach((department) => {
+      if (department.parentId === null) {
+        roots.push(department);
+      } else {
+        const parent = byId.get(department.parentId);
+        if(parent) {
+          parent.children.push(department);
+        }
+      }
+    });
+    return roots;
+  }
+
   findOne(id: number) {
     return `This action returns a #${id} department`;
   }
