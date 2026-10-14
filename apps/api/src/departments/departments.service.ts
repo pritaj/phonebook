@@ -7,11 +7,13 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class DepartmentsService {
-
-  constructor(@InjectRepository(Department) private readonly departmentsRepository : Repository<Department>){}
+  constructor(
+    @InjectRepository(Department)
+    private readonly departmentsRepository: Repository<Department>,
+  ) {}
 
   create(createDepartmentDto: CreateDepartmentDto) {
-    return 'This action adds a new department';
+    return this.departmentsRepository.save(createDepartmentDto);
   }
 
   findAll() {
@@ -29,10 +31,4 @@ export class DepartmentsService {
   remove(id: number) {
     return `This action removes a #${id} department`;
   }
-
-
-
 }
-
-
-
