@@ -27,4 +27,7 @@ export class Employee {
 
   @Column({type: 'varchar', nullable: true})
   position: string | null;
+
+  @Column({type: 'boolean', default: false})
+  inside: boolean;
 }

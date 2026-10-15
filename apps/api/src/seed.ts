@@ -54,6 +54,7 @@ async function seed() {
     departmentId: createChildDataIT.id,
     email: 'nagy.peter@example.com',
     position: 'Rendszergazda',
+    inside: true,
   });
 
   await employeesService.create({
@@ -63,6 +64,7 @@ async function seed() {
     phone: '+36300000000',
     email: 'kovacs.andras@example.com',
     position: 'Karbantartó technikus',
+    inside: true,
   });
 
   await employeesService.create({
@@ -81,6 +83,7 @@ async function seed() {
     phone: '+36300000002',
     email: 'halasz.ferenc@example.com',
     position: 'Minőségbiztosítási mérnök',
+    inside: true,
   });
 
   await employeesService.create({
@@ -90,6 +93,7 @@ async function seed() {
     phone: '+36300000003',
     email: 'papai.csilla@example.com',
     position: 'HR asszisztens',
+    inside: true,
   });
 
   await employeesService.create({

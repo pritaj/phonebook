@@ -21,7 +21,9 @@ export class DepartmentsService {
   }
 
   async findTree() {
-    const departments = await this.departmentsRepository.find();
+    const departments = await this.departmentsRepository.find({
+      relations: {employees: true}
+    });
     const byId = new Map<number, Department>();
     departments.forEach((department) => {
       department.children = [];
