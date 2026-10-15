@@ -6,6 +6,7 @@ import { SisModule } from './sis/sis.module';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DepartmentsModule } from './departments/departments.module';
+import { EmployeesModule } from './employees/employees.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { DepartmentsModule } from './departments/departments.module';
       }),
     }),
     DepartmentsModule,
+    EmployeesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
