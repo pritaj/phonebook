@@ -19,11 +19,11 @@ export function collectAllPeople(
 ): { person: Person; deptName: string }[] {
   let result: { person: Person; deptName: string }[] = [];
   departments.forEach((dept) => {
-    for (const person of dept.people) {
-      result.push({ person, deptName: dept.Name_hu });
+    for (const person of dept.employees) {
+      result.push({ person, deptName: dept.nameHu });
     }
-    if (dept.departments.length > 0) {
-      result = result.concat(collectAllPeople(dept.departments));
+    if (dept.children.length > 0) {
+      result = result.concat(collectAllPeople(dept.children));
     }
   });
   return result;

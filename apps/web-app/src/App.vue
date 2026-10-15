@@ -52,7 +52,7 @@ const filteredDepartments = computed(() => {
 
   const allPeople = collectAllPeople(departments.value);
   const foundPeople = findMatchingPeople(allPeople, query);
-  const ids = new Set(foundPeople.map((i) => i.ID));
+  const ids = new Set(foundPeople.map((i) => i.id));
 
   return departments.value
     .map((dept) => filterDepartmentByIds(dept, ids))

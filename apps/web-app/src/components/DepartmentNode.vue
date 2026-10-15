@@ -26,7 +26,7 @@ const props = defineProps<{
 }>();
 const { t, locale } = useI18n();
 const filteredPeople = computed(() => {
-  return props.dept.people.filter((person) => {
+  return props.dept.employees.filter((person) => {
     if (person.inside === true && !props.showInside) {
       return false;
     }
@@ -34,48 +34,48 @@ const filteredPeople = computed(() => {
       return false;
     }
     if (!props.onlyWithPhone) return true;
-    if (person.Phone !== null && person.Phone !== "") {
+    if (person.phone !== null && person.phone !== "") {
       return true;
     }
     return false;
   });
 });
 const visibleChildren = computed(() => {
-  return props.dept.departments.filter((dept) => {
-    return collectAllPeople([dept]).length > 0;
+  return props.dept.children.filter((child) => {
+    return collectAllPeople([child]).length > 0;
   });
 });
 
 const otherDept = computed(() => {
   return {
-    ID: -props.dept.ID,
-    Name_hu: "Egyéb",
-    Name_en: "Other",
-    IdFrom: props.dept.ID,
-    departments: [],
-    people: props.dept.people,
-  };
+    id: -props.dept.id,
+    nameHu: "Egyéb",
+    nameEn: "Other",
+    parentId: props.dept.id,
+    children: [],
+    employees: props.dept.employees,
+  }
 });
 
 const displayName = computed(() => {
-  if (locale.value === "en-US" && props.dept.Name_en) {
-    return props.dept.Name_en;
+  if (locale.value === "en-US" && props.dept.nameEn) {
+    return props.dept.nameEn;
   } else {
-    return props.dept.Name_hu;
+    return props.dept.nameEn;
   }
 });
 </script>
 
 <template>
-  <AccordionPanel :value="dept.ID">
+  <AccordionPanel :value="dept.id">
     <AccordionHeader
       :class="{ 'pointer-events-none!': locked }"
       :pt="{ toggleicon: { class: { 'hidden!': locked } } }"
     >
       <div class="flex items-center gap-2 w-full justify-between">
         <div class="flex items-center gap-2">
-          <MaterialIcon :icon="getDepartmentIcon(dept.ID)" />
-          {{ dept.ID == 1 ? "Example Company Ltd." : displayName }}
+          <MaterialIcon :icon="getDepartmentIcon(dept.id)" />
+          {{ dept.id == 1 ? "Example Company Ltd." : displayName }}
         </div>
 
         <slot name="actions" />
@@ -85,12 +85,12 @@ const displayName = computed(() => {
       <Accordion
         lazy
         multiple
-        :key="expandAll + dept.departments.map((d) => d.ID).join(',')"
-        :value="expandAll ? dept.departments.map((d) => d.ID) : []"
+        :key="expandAll + dept.children.map((d) => d.id).join(',')"
+        :value="expandAll ? dept.children.map((d) => d.id) : []"
       >
         <DepartmentNode
           v-for="child in visibleChildren"
-          :key="child.ID"
+          :key="child.id"
           :dept="child"
           :expandAll="expandAll"
           :onlyWithPhone="onlyWithPhone"
@@ -98,7 +98,7 @@ const displayName = computed(() => {
           :showOutside="showOutside"
         />
         <DepartmentNode
-          v-if="visibleChildren.length > 0 && dept.people.length > 0"
+          v-if="visibleChildren.length > 0 && dept.employees.length > 0"
           :dept="otherDept"
           :expandAll="expandAll"
           :onlyWithPhone="onlyWithPhone"
@@ -112,22 +112,22 @@ const displayName = computed(() => {
       >
         <Card
           v-for="person in filteredPeople"
-          :key="person.ID"
+          :key="person.id"
           class="overflow-hidden w-full hover:from-[--p-surface-hover-bg-primary] to-[--p-surface-hover-bg-secondary] hover:drop-shadow transition-all"
         >
           <template #header>
             <span class="w-full flex items-center justify-center">
               <MaterialIcon
                 :icon="
-                  person.LastName.includes('Technikai') ? 'group' : 'person'
+                  person.lastName.includes('Technikai') ? 'group' : 'person'
                 "
                 class="text-[245px]!"
               />
             </span>
           </template>
           <template #title>
-            {{ person.LastName }}
-            {{ person.FirstName }}
+            {{ person.lastName }}
+            {{ person.firstName }}
           </template>
           <template #subtitle>
             <Tag
@@ -136,30 +136,30 @@ const displayName = computed(() => {
             />
           </template>
           <template #content>
-            {{ person.Phone }}
+            {{ person.phone }}
           </template>
           <template #footer>
             <div class="flex gap-1 my-1 h-fit">
               <Button
                 :label="t('exp')"
                 fluid
-                :disabled="!person.Phone"
+                :disabled="!person.phone"
                 icon="pi pi-download"
                 @click="
                   downloadVCard(
-                    `${person.LastName}_${person.FirstName}.vcf`,
-                    personToVCard(person, dept.Name_hu),
+                    `${person.lastName}_${person.firstName}.vcf`,
+                    personToVCard(person, dept.nameHu),
                   )
                 "
               />
               <Button
-                v-if="person.Phone"
+                v-if="person.phone"
                 :label="t('hivas')"
                 severity="success"
                 icon="pi pi-phone"
                 fluid
                 as="a"
-                :href="`tel:${person.Phone}`"
+                :href="`tel:${person.phone}`"
               />
               <Button
                 v-else

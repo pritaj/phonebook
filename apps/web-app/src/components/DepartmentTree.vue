@@ -27,12 +27,12 @@ const visibleDepartments = computed(() => {
     lazy
     v-else
     multiple
-    :key="expandAll + departments.map((d) => d.ID).join(',')"
-    :value="expandAll ? departments.map((d) => d.ID) : [departments[0].ID]"
+    :key="expandAll + departments.map((d) => d.id).join(',')"
+    :value="expandAll ? departments.map((d) => d.id) : [departments[0].id]"
   >
     <DepartmentNode
       v-for="dept in visibleDepartments"
-      :key="dept.ID"
+      :key="dept.id"
       :dept="dept"
       :expandAll="expandAll"
       :onlyWithPhone="onlyWithPhone"
