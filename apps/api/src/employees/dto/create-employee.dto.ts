@@ -5,4 +5,5 @@ export class CreateEmployeeDto {
     phone?:string;
     email?:string;
     position?:string;
+    inside?:boolean;
 }

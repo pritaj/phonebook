@@ -1,3 +1,4 @@
+import { Employee } from '../../employees/entities/employee.entity';
 import {
   Column,
   Entity,
@@ -27,4 +28,7 @@ export class Department {
 
   @OneToMany(() => Department, (department) => department.parent)
   children: Department[];
+
+  @OneToMany(() => Employee, (employee) => employee.department)
+  employees: Employee[];
 }
