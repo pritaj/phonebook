@@ -3,14 +3,18 @@ import { AppModule } from './app.module';
 import { DepartmentsService } from './departments/departments.service';
 import { DataSource } from 'typeorm';
 import { EmployeesService } from './employees/employees.service';
+import { UsersService } from './users/users.service';
 
 async function seed() {
   const app = await NestFactory.createApplicationContext(AppModule);
   const departmentsService = app.get(DepartmentsService);
   const employeesService = app.get(EmployeesService);
+  const usersService = app.get(UsersService);
   const dataSource = app.get(DataSource);
 
   await dataSource.query('TRUNCATE TABLE department RESTART IDENTITY CASCADE');
+  await dataSource.query('TRUNCATE TABLE "user" RESTART IDENTITY CASCADE');
+
   const createDept = await departmentsService.create({
     nameHu: 'Példa Kft.',
     nameEn: 'Example Ltd.',
@@ -103,6 +107,12 @@ async function seed() {
     phone: '+36300000004',
     email: 'kalman.istvan@example.com',
     position: 'Pénzügyi elemző',
+  });
+
+  await usersService.create({
+    username: "testuser",
+    password: '1234',
+    role: 'user',
   });
 
   await app.close();
