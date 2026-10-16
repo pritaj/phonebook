@@ -19,121 +19,133 @@ describe("matchesSearch", () => {
 describe("filterDepartment - rekurzió", () => {
   it("al-department-ben lévő egyezést is megtalálja", () => {
     const childDept: Department = {
-      ID: 1220,
-      IdFrom: 1,
-      Name_hu: "QA/QC",
-      Name_en: "QA/QC",
-      departments: [
+      id: 1220,
+      parentId: 1,
+      nameHu: "QA/QC",
+      nameEn: "QA/QC",
+      children: [
         {
-          ID: 1170,
-          IdFrom: 1220,
-          Name_hu: "QC labor",
-          Name_en: "QC - Laboratory",
-          departments: [],
-          people: [
+          id: 1170,
+          parentId: 1220,
+          nameHu: "QC labor",
+          nameEn: "QC - Laboratory",
+          children: [],
+          employees: [
             {
-              ID: 589303,
-              DepID: 1170,
-              FirstName: "Dóra",
-              LastName: "Ádám",
-              Phone: null,
+              id: 589303,
+              departmentId: 1170,
+              firstName: "Dóra",
+              lastName: "Ádám",
+              phone: null,
+              email: null,
+              position: "Labor aszisztens",
               inside: false,
             },
           ],
         },
       ],
-      people: [
+      employees: [
         {
-          ID: 79920,
-          DepID: 1190,
-          FirstName: "Aranka",
-          LastName: "Alföldi",
-          Phone: "+36709771619",
+          id: 79920,
+          departmentId: 1190,
+          firstName: "Aranka",
+          lastName: "Alföldi",
+          phone: "+36000000123",
+          email: "alfoldi.aranka@example.com",
+          position: "Labor aszisztens",
           inside: false,
         },
       ],
     };
 
     const parentDept: Department = {
-      ID: 1210,
-      IdFrom: 1,
-      Name_hu: "Igazgató - R&D/Director - R&D",
-      Name_en: "Director -  R&D",
-      departments: [childDept],
-      people: [],
+      id: 1210,
+      parentId: 1,
+      nameHu: "Igazgató - R&D/Director - R&D",
+      nameEn: "Director -  R&D",
+      children: [childDept],
+      employees: [],
     };
 
     const result = filterDepartment(parentDept, "Ádám");
 
-    expect(result?.departments.length).toBe(1);
+    expect(result?.children.length).toBe(1);
   });
 });
 describe("filterDepartment", () => {
   it("csak az egyező nevű embereket tartja meg a department-ben", () => {
     const testDept: Department = {
-      ID: 1240,
-      IdFrom: 1,
-      Name_hu: "Beszerzés/Purchasing",
-      Name_en: "Purchasing",
-      departments: [],
-      people: [
+      id: 1240,
+      parentId: 1,
+      nameHu: "Beszerzés/Purchasing",
+      nameEn: "Purchasing",
+      children: [],
+      employees: [
         {
-          ID: 129010,
-          DepID: 1240,
-          FirstName: "Adrienn",
-          LastName: "Molnár",
-          Phone: "+36705229428",
+          id: 129010,
+          departmentId: 1240,
+          firstName: "Adrienn",
+          lastName: "Molnár",
+          phone: "+36000000028",
+          email: "molnar.adrienn@example.com",
+          position: null,
           inside: true,
         },
         {
-          ID: 123,
-          DepID: 1240,
-          FirstName: "Rolika",
-          LastName: "Kovács",
-          Phone: "+12305229428",
+          id: 123,
+          departmentId: 1240,
+          firstName: "Roland",
+          lastName: "Kovács",
+          phone: "+12000001234",
+          email: "kovacs.roland@example.com",
+          position: null,
           inside: true,
         },
       ],
     };
     const test = filterDepartment(testDept, "Kovács");
-    expect(test?.people.length).toBe(1);
+    expect(test?.employees.length).toBe(1);
   });
   it("megtartja a department-et, ha csak a neve egyezik a kereséssel", () => {
     const testDept: Department = {
-      ID: 1040,
-      IdFrom: 1,
-      Name_hu: "Pénzügy/Finance",
-      Name_en: "Finance",
-      departments: [],
-      people: [
+      id: 1040,
+      parentId: 1,
+      nameHu: "Pénzügy/Finance",
+      nameEn: "Finance",
+      children: [],
+      employees: [
         {
-          ID: 358380,
-          DepID: 1040,
-          FirstName: "Bicók Éva",
-          LastName: "Bajuszné",
-          Phone: "+36704378165",
+          id: 358380,
+          departmentId: 1040,
+          firstName: "Bicók",
+          lastName: "Éva",
+          phone: "+12000001234",
+          email: "bicok.eva@example.com",
+          position: null,
           inside: true,
         },
       ],
     };
     const result = filterDepartment(testDept, "Pénzügy");
     expect(result).not.toBeNull();
-    expect(result?.people.length).toBe(0);
+    expect(result?.employees.length).toBe(0);
   });
   it("null-t ad vissza, ha sem a department neve, sem senki nem egyezik", () => {
     const testDept: Department = {
-      ID: 1130,
-      IdFrom: 1,
-      Name_hu: "Karbantartás/Maintenance",
-      Name_en: "Maintenance",
-      departments: [],
-      people: [
+      id: 1130,
+      parentId: 1,
+      nameHu: "Karbantartás/Maintenance",
+      nameEn: "Maintenance",
+      children: [],
+      employees: [
         {
-          ID: 8880,
-          DepID: 1130,
-          FirstName: "Zoltán",
-          LastName: "Ács",
-          Phone: "",
+          id: 8880,
+          departmentId: 1130,
+          firstName: "Zoltán",
+          lastName: "Ács",
+          phone: null,
+          email: "acs.zoltan@example.com",
+          position: "Villanyszerelő",
           inside: true,
         },
       ],
@@ -147,22 +159,26 @@ describe("findMatchingPeople", () => {
     const lista = [
       {
         person: {
-          ID: 1,
-          DepID: 1,
-          FirstName: "Takashi",
-          LastName: "Hara",
-          Phone: null,
+          id: 1,
+          departmentId: 1,
+          firstName: "Takashi",
+          lastName: "Hara",
+          phone: null,
+          email: null,
+          position: null,
           inside: false,
         },
         deptName: "Beszerzés",
       },
       {
         person: {
-          ID: 2,
-          DepID: 1,
-          FirstName: "Nagy",
-          LastName: "Andrea",
-          Phone: null,
+          id: 2,
+          departmentId: 1,
+          firstName: "Nagy",
+          lastName: "Andrea",
+          phone: null,
+          email: "nagy.andrea@example.hu",
+          position: "Test",
           inside: false,
         },
         deptName: "Pénzügy",
@@ -170,6 +186,6 @@ describe("findMatchingPeople", () => {
     ];
     const result = findMatchingPeople(lista, "Takasi");
     expect(result).toHaveLength(1);
-    expect(result[0].LastName).toBe("Hara");
+    expect(result[0].lastName).toBe("Hara");
   });
 });

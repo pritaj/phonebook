@@ -1,17 +1,19 @@
-export interface Person {
-  ID: number;
-  DepID: number;
-  FirstName: string;
-  LastName: string;
-  Phone: string | null;
+export interface Employee {
+  id: number;
+  lastName: string;
+  firstName: string;
+  departmentId: number;
+  phone: string | null;
+  email: string | null;
+  position: string | null;
   inside: boolean;
 }
 
 export interface Department {
-  ID: number;
-  IdFrom: number;
-  Name_hu: string;
-  Name_en: string;
-  departments: Department[];
-  people: Person[];
+  id: number;
+  nameHu: string;
+  nameEn: string | null;
+  parentId: number | null;
+  children: Department[];
+  employees: Employee[];
 }

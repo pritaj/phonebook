@@ -1,5 +1,5 @@
 import Fuse from "fuse.js";
-import type { Department, Person } from "../types/sis";
+import type { Department, Employee} from "../types/sis";
 
 export function matchesSearch(text: string, query: string): boolean {
   return text.toLowerCase().includes(query.toLowerCase());
@@ -9,34 +9,34 @@ export function filterDepartment(
   dept: Department,
   query: string,
 ): Department | null {
-  const matchingPeople = dept.people.filter(
+  const matchingPeople = dept.employees.filter(
     (person) =>
-      matchesSearch(person.FirstName, query) ||
-      matchesSearch(person.LastName, query),
+      matchesSearch(person.firstName, query) ||
+      matchesSearch(person.lastName, query),
   );
-  const filteredChildren = dept.departments
+  const filteredChildren = dept.children
     .map((child) => filterDepartment(child, query))
     .filter((child) => child !== null);
-  const deptNameMatches = matchesSearch(dept.Name_hu, query);
+  const deptNameMatches = matchesSearch(dept.nameHu, query);
   const hasMatch =
     deptNameMatches || matchingPeople.length > 0 || filteredChildren.length > 0;
   if (hasMatch) {
-    return { ...dept, people: matchingPeople, departments: filteredChildren };
+    return { ...dept, employees: matchingPeople, children: filteredChildren };
   } else {
     return null;
   }
 }
 export function findMatchingPeople(
-  lista: { person: Person; deptName: string }[],
+  lista: { person: Employee; deptName: string }[],
   query: string,
 ) {
   const fuse = new Fuse(lista, {
     keys: [
-      "person.LastName",
-      "person.FirstName",
+      "person.lastName",
+      "person.firstName",
       {
         name: "fullName",
-        getFn: (n) => n.person.LastName + " " + n.person.FirstName,
+        getFn: (n) => n.person.lastName + " " + n.person.firstName,
       },
     ],
     threshold: 0.3,
@@ -49,13 +49,13 @@ export function filterDepartmentByIds(
   dept: Department,
   ids: Set<number>,
 ): Department | null {
-  const matchingPeople = dept.people.filter((person) => ids.has(person.ID));
-  const filteredChildren = dept.departments
+  const matchingPeople = dept.employees.filter((person) => ids.has(person.id));
+  const filteredChildren = dept.children
     .map((child) => filterDepartmentByIds(child, ids))
     .filter((child) => child !== null);
   const hasMatch = matchingPeople.length > 0 || filteredChildren.length > 0;
   if (hasMatch) {
-    return { ...dept, people: matchingPeople, departments: filteredChildren };
+    return { ...dept, employees: matchingPeople, children: filteredChildren };
   } else {
     return null;
   }

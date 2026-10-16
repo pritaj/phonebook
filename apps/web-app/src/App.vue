@@ -52,7 +52,7 @@ const filteredDepartments = computed(() => {
 
   const allPeople = collectAllPeople(departments.value);
   const foundPeople = findMatchingPeople(allPeople, query);
-  const ids = new Set(foundPeople.map((i) => i.ID));
+  const ids = new Set(foundPeople.map((i) => i.id));
 
   return departments.value
     .map((dept) => filterDepartmentByIds(dept, ids))
@@ -70,7 +70,7 @@ const currentButtonSize = computed(() => {
 
 onMounted(async () => {
   departments.value = await api
-    .get("sis", { searchParams: { areaId: 1010 } })
+    .get("departments/tree")
     .json<Department[]>();
 
   loading.value = false;
@@ -79,7 +79,7 @@ onMounted(async () => {
 function exportAll() {
   const people = collectAllPeople(departments.value);
   const peopleWithPhone = people.filter(
-    (entry) => entry.person.Phone !== null && entry.person.Phone !== "",
+    (entry) => entry.person.phone !== null && entry.person.phone !== "",
   );
   const vcards = peopleWithPhone.map((entry) =>
     personToVCard(entry.person, entry.deptName),
