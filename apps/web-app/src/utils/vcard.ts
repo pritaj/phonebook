@@ -1,7 +1,7 @@
-import type { Department, Person } from "../types/sis";
+import type { Department, Employee} from "../types/sis";
 
-export function personToVCard(person: Person, deptName: string): string {
-  return `BEGIN:VCARD\r\nVERSION:3.0\r\nN:${person.LastName};${person.FirstName}\r\nFN:${person.LastName} ${person.FirstName}\r\nORG:Példa Kft.;${deptName}\r\nTEL;TYPE=WORK,VOICE:${person.Phone}\r\nEND:VCARD`;
+export function personToVCard(person: Employee, deptName: string): string {
+  return `BEGIN:VCARD\r\nVERSION:3.0\r\nN:${person.lastName};${person.firstName}\r\nFN:${person.lastName} ${person.firstName}\r\nORG:Példa Kft.;${deptName}\r\nTEL;TYPE=WORK,VOICE:${person.phone}\r\nEND:VCARD`;
 }
 
 export function downloadVCard(filename: string, content: string) {
@@ -16,8 +16,8 @@ export function downloadVCard(filename: string, content: string) {
 
 export function collectAllPeople(
   departments: Department[],
-): { person: Person; deptName: string }[] {
-  let result: { person: Person; deptName: string }[] = [];
+): { person: Employee; deptName: string }[] {
+  let result: { person: Employee; deptName: string }[] = [];
   departments.forEach((dept) => {
     for (const person of dept.employees) {
       result.push({ person, deptName: dept.nameHu });
