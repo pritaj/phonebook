@@ -9,5 +9,12 @@
   "könyv": "book",
   "mindenki": "all",
   "szuro": "Filter",
-  "telefonszam": "Phonenumber"
+  "telefonszam": "Phonenumber",
+  "bejelentkezes": "Sign in",
+  "felhasznalonev": "Username",
+  "jelszo": "Password",
+  "belepes": "Sign in",
+  "kilepes": "Sign out",
+  "hibas_belepes": "Wrong username or password",
+  "szerver_hiba": "Could not connect to the server"
 }
