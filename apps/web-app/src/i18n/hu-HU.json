@@ -9,5 +9,12 @@
   "könyv": "könyv",
   "mindenki": "Mindenki",
   "szuro": "Szűrő",
-  "telefonszam": "Telefonszám"
+  "telefonszam": "Telefonszám",
+  "bejelentkezes": "Bejelentkezés",
+  "felhasznalonev": "Felhasználónév",
+  "jelszo": "Jelszó",
+  "belepes": "Belépés",
+  "kilepes": "Kilépés",
+  "hibas_belepes": "Hibás felhasználónév vagy jelszó",
+  "szerver_hiba": "Nem sikerült a szerverhez kapcsolódni"
 }
