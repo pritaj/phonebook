@@ -15,8 +15,8 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+    it('a hello végpont egy üzenet objektumot ad vissza', () => {
+      expect(appController.getHello()).toEqual({ message: 'Hello World!' });
     });
   });
 });
