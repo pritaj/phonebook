@@ -110,9 +110,15 @@ async function seed() {
   });
 
   await usersService.create({
-    username: "testuser",
+    username: 'testuser',
     password: '1234',
     role: 'user',
+  });
+
+  await usersService.create({
+    username: 'admin',
+    password: 'admin1234',
+    role: 'admin',
   });
 
   await app.close();
