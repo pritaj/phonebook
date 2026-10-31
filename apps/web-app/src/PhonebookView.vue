@@ -18,6 +18,7 @@ import { onMounted, computed, ref, watch } from "vue";
 import { collectAllPeople, personToVCard, downloadVCard } from "./utils/vcard";
 import { api } from "./utils/api";
 import { useAuthStore } from "./stores/auth-store/auth-store";
+import { useAdminStore } from "./stores/admin-store";
 import LocaleToggle from "./components/LocaleToggle.vue";
 import MaterialIcon from "./components/MaterialIcon.vue";
 import EmployeeFormDialog from "./components/EmployeeFormDialog.vue";
@@ -25,6 +26,7 @@ import { useBreakpoints, breakpointsTailwind } from "@vueuse/core";
 
 const { t } = useI18n();
 const auth = useAuthStore();
+const admin = useAdminStore();
 const departments = ref<Department[]>([]);
 const loading = ref<boolean>(true);
 const searchQuery = ref<string>("");
@@ -41,6 +43,15 @@ watch(searchQuery, () => {
 const onlyWithPhone = ref<boolean>(false);
 const showInside = ref<boolean>(true);
 const showOutside = ref<boolean>(true);
+const dialogVisible = computed({
+  get: () => showEmployeeDialog.value || admin.editing !== null,
+  set: (value: boolean) => {
+    if (!value) {
+      showEmployeeDialog.value = false;
+      admin.stopEditing();
+    }
+  },
+});
 const filterPanel = ref();
 const showEmployeeDialog = ref<boolean>(false);
 
@@ -79,6 +90,11 @@ onMounted(async () => {
   await loadDepartments();
   loading.value = false;
 });
+
+watch(
+  () => admin.reloadCounter,
+  () => loadDepartments(),
+);
 
 function exportAll() {
   const people = collectAllPeople(departments.value);
@@ -207,8 +223,9 @@ function exportAll() {
       </DepartmentTree>
     </div>
     <EmployeeFormDialog
-      v-model:visible="showEmployeeDialog"
+      v-model:visible="dialogVisible"
       :departments="departments"
+      :employee="admin.editing"
       @saved="loadDepartments()"
     />
   </div>
