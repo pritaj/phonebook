@@ -16,5 +16,16 @@
   "belepes": "Sign in",
   "kilepes": "Sign out",
   "hibas_belepes": "Wrong username or password",
-  "szerver_hiba": "Could not connect to the server"
+  "szerver_hiba": "Could not connect to the server",
+  "admin_uj_munkatars": "New employee",
+  "admin_vezeteknev": "Last name",
+  "admin_keresztnev": "First name",
+  "admin_osztaly": "Department",
+  "admin_telefon": "Phone",
+  "admin_email": "Email",
+  "admin_beosztas": "Position",
+  "admin_bent_van": "In the office",
+  "admin_mentes": "Save",
+  "admin_megse": "Cancel",
+  "admin_hiba": "Saving failed"
 }
