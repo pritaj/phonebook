@@ -20,6 +20,7 @@ import { api } from "./utils/api";
 import { useAuthStore } from "./stores/auth-store/auth-store";
 import LocaleToggle from "./components/LocaleToggle.vue";
 import MaterialIcon from "./components/MaterialIcon.vue";
+import EmployeeFormDialog from "./components/EmployeeFormDialog.vue";
 import { useBreakpoints, breakpointsTailwind } from "@vueuse/core";
 
 const { t } = useI18n();
@@ -41,6 +42,7 @@ const onlyWithPhone = ref<boolean>(false);
 const showInside = ref<boolean>(true);
 const showOutside = ref<boolean>(true);
 const filterPanel = ref();
+const showEmployeeDialog = ref<boolean>(false);
 
 const isSearching = computed(() => {
   return debouncedQuery.value.trim().length > 0;
@@ -63,16 +65,18 @@ const filteredDepartments = computed(() => {
 
 const breakpoints = useBreakpoints(breakpointsTailwind);
 
-// Computes size based on tailwind screens (sm, md, lg, xl)
 const currentButtonSize = computed(() => {
-  if (breakpoints.lg.value) return "large"; // Large screens and up
-  if (breakpoints.md.value) return undefined; // Normal size for tablets
-  return "small"; // Mobile screens
+  if (breakpoints.lg.value) return "large";
+  if (breakpoints.md.value) return undefined;
+  return "small";
 });
 
-onMounted(async () => {
+async function loadDepartments() {
   departments.value = await api.get("departments/tree").json<Department[]>();
+}
 
+onMounted(async () => {
+  await loadDepartments();
   loading.value = false;
 });
 
@@ -120,6 +124,14 @@ function exportAll() {
         <div
           class="w-fit h-full flex flex-row flex-wrap md:flex-nowrap items-center justify-center gap-2"
         >
+          <Button
+            v-if="auth.user?.role === 'admin'"
+            :label="t('admin_uj_munkatars')"
+            icon="pi pi-user-plus"
+            :pt="{ label: { class: 'hidden sm:inline' } }"
+            :size="currentButtonSize ?? 'normal'"
+            @click="showEmployeeDialog = true"
+          />
           <LocaleToggle />
           <Divider layout="vertical" class="hidden sm:block" />
           <DarkModeToggle />
@@ -194,5 +206,10 @@ function exportAll() {
         </template>
       </DepartmentTree>
     </div>
+    <EmployeeFormDialog
+      v-model:visible="showEmployeeDialog"
+      :departments="departments"
+      @saved="loadDepartments()"
+    />
   </div>
 </template>

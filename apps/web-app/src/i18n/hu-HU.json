@@ -16,5 +16,16 @@
   "belepes": "Belépés",
   "kilepes": "Kilépés",
   "hibas_belepes": "Hibás felhasználónév vagy jelszó",
-  "szerver_hiba": "Nem sikerült a szerverhez kapcsolódni"
+  "szerver_hiba": "Nem sikerült a szerverhez kapcsolódni",
+  "admin_uj_munkatars": "Új munkatárs",
+  "admin_vezeteknev": "Vezetéknév",
+  "admin_keresztnev": "Keresztnév",
+  "admin_osztaly": "Osztály",
+  "admin_telefon": "Telefonszám",
+  "admin_email": "E-mail",
+  "admin_beosztas": "Beosztás",
+  "admin_bent_van": "Az irodában van",
+  "admin_mentes": "Mentés",
+  "admin_megse": "Mégse",
+  "admin_hiba": "A mentés nem sikerült"
 }
