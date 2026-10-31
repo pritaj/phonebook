@@ -1,5 +1,5 @@
 import Fuse from "fuse.js";
-import type { Department, Employee} from "../types/sis";
+import type { Department, Employee } from "../types/sis";
 
 export function matchesSearch(text: string, query: string): boolean {
   return text.toLowerCase().includes(query.toLowerCase());
@@ -40,6 +40,7 @@ export function findMatchingPeople(
       },
     ],
     threshold: 0.3,
+    ignoreDiacritics: true,
   });
   const result = fuse.search(query);
   return result.map((r) => r.item.person);

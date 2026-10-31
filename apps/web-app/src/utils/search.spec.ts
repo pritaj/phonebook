@@ -188,4 +188,42 @@ describe("findMatchingPeople", () => {
     expect(result).toHaveLength(1);
     expect(result[0].lastName).toBe("Hara");
   });
+  it("ékezet nélküli keresésre is megtalálja az embert", () => {
+    const lista = [
+      {
+        person: {
+          id: 3,
+          departmentId: 1,
+          firstName: "Roland",
+          lastName: "Kovács",
+          phone: null,
+          email: null,
+          position: null,
+          inside: false,
+        },
+        deptName: "Beszerzés",
+      },
+    ];
+    const result = findMatchingPeople(lista, "Kovacs");
+    expect(result).toHaveLength(1);
+  });
+  it("rövid névnél is megtalálja ékezet nélkül", () => {
+    const lista = [
+      {
+        person: {
+          id: 4,
+          departmentId: 1,
+          firstName: "Zoltán",
+          lastName: "Ács",
+          phone: null,
+          email: null,
+          position: null,
+          inside: false,
+        },
+        deptName: "Karbantartás",
+      },
+    ];
+    const result = findMatchingPeople(lista, "Acs");
+    expect(result).toHaveLength(1);
+  });
 });
