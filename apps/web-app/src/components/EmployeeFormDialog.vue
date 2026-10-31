@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { Button, Checkbox, Dialog, InputText, Select } from "primevue";
-import type { Department } from "../types/sis";
+import type { Department, Employee } from "../types/sis";
 import { api } from "../utils/api";
 
 const props = defineProps<{
   visible: boolean;
   departments: Department[];
+  employee?: Employee | null;
 }>();
 
 const emit = defineEmits<{
@@ -50,6 +51,10 @@ const canSave = computed(
     departmentId.value !== null,
 );
 
+const header = computed(() =>
+  props.employee ? t("admin_szerkesztes") : t("admin_uj_munkatars"),
+);
+
 function resetForm() {
   lastName.value = "";
   firstName.value = "";
@@ -61,6 +66,26 @@ function resetForm() {
   errorMessage.value = "";
 }
 
+watch(
+  () => props.visible,
+  (isVisible) => {
+    if (!isVisible) return;
+    const e = props.employee;
+    if (e) {
+      lastName.value = e.lastName;
+      firstName.value = e.firstName;
+      departmentId.value = e.departmentId;
+      phone.value = e.phone ?? "";
+      email.value = e.email ?? "";
+      position.value = e.position ?? "";
+      inside.value = e.inside;
+      errorMessage.value = "";
+    } else {
+      resetForm();
+    }
+  },
+);
+
 function close() {
   emit("update:visible", false);
 }
@@ -68,19 +93,21 @@ function close() {
 async function save() {
   saving.value = true;
   errorMessage.value = "";
+  const payload = {
+    lastName: lastName.value.trim(),
+    firstName: firstName.value.trim(),
+    departmentId: departmentId.value,
+    phone: phone.value.trim() || null,
+    email: email.value.trim() || null,
+    position: position.value.trim() || null,
+    inside: inside.value,
+  };
   try {
-    await api.post("employees", {
-      json: {
-        lastName: lastName.value.trim(),
-        firstName: firstName.value.trim(),
-        departmentId: departmentId.value,
-        phone: phone.value.trim() || undefined,
-        email: email.value.trim() || undefined,
-        position: position.value.trim() || undefined,
-        inside: inside.value,
-      },
-    });
-    resetForm();
+    if (props.employee) {
+      await api.patch(`employees/${props.employee.id}`, { json: payload });
+    } else {
+      await api.post("employees", { json: payload });
+    }
     emit("saved");
     close();
   } catch {
@@ -96,7 +123,7 @@ async function save() {
     :visible="props.visible"
     @update:visible="(value: boolean) => emit('update:visible', value)"
     modal
-    :header="t('admin_uj_munkatars')"
+    :header="header"
     :style="{ width: '28rem' }"
     :breakpoints="{ '575px': '95vw' }"
   >

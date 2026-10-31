@@ -27,5 +27,9 @@
   "admin_bent_van": "Az irodában van",
   "admin_mentes": "Mentés",
   "admin_megse": "Mégse",
-  "admin_hiba": "A mentés nem sikerült"
+  "admin_hiba": "A mentés nem sikerült",
+  "admin_szerkesztes": "Munkatárs szerkesztése",
+  "admin_szerkesztes_gomb": "Szerkesztés",
+  "admin_torles": "Törlés",
+  "admin_torles_megerosites": "Biztosan törlöd ezt a munkatársat?"
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Department } from "../types/sis";
+import type { Department, Employee } from "../types/sis";
 import {
   Accordion,
   AccordionPanel,
@@ -15,6 +15,9 @@ import { collectAllPeople } from "../utils/vcard.ts";
 import MaterialIcon from "./MaterialIcon.vue";
 import { computed } from "vue";
 import { getDepartmentIcon } from "../utils/departmentIcons.ts";
+import { useAuthStore } from "../stores/auth-store/auth-store";
+import { useAdminStore } from "../stores/admin-store";
+import { api } from "../utils/api";
 
 const props = defineProps<{
   dept: Department;
@@ -25,6 +28,18 @@ const props = defineProps<{
   locked?: boolean;
 }>();
 const { t, locale } = useI18n();
+const auth = useAuthStore();
+const admin = useAdminStore();
+
+async function removeEmployee(person: Employee) {
+  if (!window.confirm(t("admin_torles_megerosites"))) return;
+  try {
+    await api.delete(`employees/${person.id}`);
+    admin.requestReload();
+  } catch {
+    window.alert(t("admin_hiba"));
+  }
+}
 const filteredPeople = computed(() => {
   return props.dept.employees.filter((person) => {
     if (person.inside === true && !props.showInside) {
@@ -54,14 +69,14 @@ const otherDept = computed(() => {
     parentId: props.dept.id,
     children: [],
     employees: props.dept.employees,
-  }
+  };
 });
 
 const displayName = computed(() => {
   if (locale.value === "en-US" && props.dept.nameEn) {
     return props.dept.nameEn;
   } else {
-    return props.dept.nameEn;
+    return props.dept.nameHu;
   }
 });
 </script>
@@ -170,9 +185,26 @@ const displayName = computed(() => {
                 disabled
               />
             </div>
+            <div
+              v-if="auth.user?.role === 'admin'"
+              class="flex gap-1 my-1 h-fit"
+            >
+              <Button
+                :label="t('admin_szerkesztes_gomb')"
+                icon="pi pi-pencil"
+                severity="secondary"
+                fluid
+                @click="admin.edit(person)"
+              />
+              <Button
+                :label="t('admin_torles')"
+                icon="pi pi-trash"
+                severity="danger"
+                fluid
+                @click="removeEmployee(person)"
+              />
+            </div>
           </template>
-        </Card>
-      </ul>
-    </AccordionContent>
-  </AccordionPanel>
+        </Card></ul></AccordionContent
+  ></AccordionPanel>
 </template>
