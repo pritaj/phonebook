@@ -2,6 +2,7 @@ import { Employee } from '../../employees/entities/employee.entity';
 import {
   Column,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   OneToMany,
@@ -23,6 +24,7 @@ export class Department {
   @JoinColumn({ name: 'parentId' })
   parent: Department | null;
 
+  @Index()
   @Column({ type: 'int', nullable: true })
   parentId: number | null;
 

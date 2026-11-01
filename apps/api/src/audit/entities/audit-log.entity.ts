@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -25,6 +26,7 @@ export class AuditLog {
   @Column({ type: 'varchar', nullable: true })
   details: string | null;
 
+  @Index()
   @CreateDateColumn()
   createdAt: Date;
 }
