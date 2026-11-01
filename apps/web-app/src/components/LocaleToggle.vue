@@ -23,7 +23,7 @@ function setLocale(value: string) {
 }
 </script>
 <template>
-  <SelectButton :options="availableLocales" otionLabel="flag" v-model="value">
+  <SelectButton :options="availableLocales" optionLabel="flag" v-model="value">
     <template #option="slotprops">
       <span :class="`fi ${flags[slotprops.option.split('-')[0]]}`"></span>
     </template>
