@@ -9,6 +9,7 @@ import { EmployeesModule } from './employees/employees.module';
 import { UsersModule } from './users/users.module';
 import { AuditModule } from './audit/audit.module';
 import { FavoritesModule } from './favorites/favorites.module';
+import { UserPreferencesModule } from './user-preferences/user-preferences.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { FavoritesModule } from './favorites/favorites.module';
     UsersModule,
     AuditModule,
     FavoritesModule,
+    UserPreferencesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
