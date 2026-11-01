@@ -31,5 +31,9 @@
   "admin_szerkesztes": "Edit employee",
   "admin_szerkesztes_gomb": "Edit",
   "admin_torles": "Delete",
-  "admin_torles_megerosites": "Are you sure you want to delete this employee?"
+  "admin_torles_megerosites": "Are you sure you want to delete this employee?",
+  "csak_kedvencek": "Only favorites",
+  "kedvenc": "Favorite",
+  "nincs_talalat": "No results",
+  "szuro_visszaallitasa": "Reset filters"
 }

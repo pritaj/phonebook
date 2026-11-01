@@ -8,6 +8,7 @@ import { DepartmentsModule } from './departments/departments.module';
 import { EmployeesModule } from './employees/employees.module';
 import { UsersModule } from './users/users.module';
 import { AuditModule } from './audit/audit.module';
+import { FavoritesModule } from './favorites/favorites.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { AuditModule } from './audit/audit.module';
     EmployeesModule,
     UsersModule,
     AuditModule,
+    FavoritesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

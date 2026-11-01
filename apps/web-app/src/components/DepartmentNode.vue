@@ -18,6 +18,7 @@ import { getDepartmentIcon } from "../utils/departmentIcons.ts";
 import { useAuthStore } from "../stores/auth-store/auth-store";
 import { useAdminStore } from "../stores/admin-store";
 import { api } from "../utils/api";
+import { useFavoritesStore } from "../stores/favorites-store";
 
 const props = defineProps<{
   dept: Department;
@@ -30,6 +31,7 @@ const props = defineProps<{
 const { t, locale } = useI18n();
 const auth = useAuthStore();
 const admin = useAdminStore();
+const favorites = useFavoritesStore();
 
 async function removeEmployee(person: Employee) {
   if (!window.confirm(t("admin_torles_megerosites"))) return;
@@ -145,10 +147,23 @@ const displayName = computed(() => {
             {{ person.firstName }}
           </template>
           <template #subtitle>
-            <Tag
-              :value="person.inside ? t('bent_van') : t('nincs_bent')"
-              :severity="person.inside ? 'success' : 'error'"
-            />
+            <div class="flex items-center justify-between">
+              <Tag
+                :value="person.inside ? t('bent_van') : t('nincs_bent')"
+                :severity="person.inside ? 'success' : 'error'"
+              />
+              <Button
+                :icon="
+                  favorites.isFavorite(person.id)
+                    ? 'pi pi-star-fill'
+                    : 'pi pi-star'
+                "
+                :aria-label="t('kedvenc')"
+                text
+                rounded
+                @click="favorites.toggle(person.id)"
+              />
+            </div>
           </template>
           <template #content>
             {{ person.phone }}
