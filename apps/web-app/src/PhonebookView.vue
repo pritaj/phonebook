@@ -19,6 +19,7 @@ import { collectAllPeople, personToVCard, downloadVCard } from "./utils/vcard";
 import { api } from "./utils/api";
 import { useAuthStore } from "./stores/auth-store/auth-store";
 import { useAdminStore } from "./stores/admin-store";
+import { useFavoritesStore } from "./stores/favorites-store";
 import LocaleToggle from "./components/LocaleToggle.vue";
 import MaterialIcon from "./components/MaterialIcon.vue";
 import EmployeeFormDialog from "./components/EmployeeFormDialog.vue";
@@ -27,6 +28,7 @@ import { useBreakpoints, breakpointsTailwind } from "@vueuse/core";
 const { t } = useI18n();
 const auth = useAuthStore();
 const admin = useAdminStore();
+const favorites = useFavoritesStore();
 const departments = ref<Department[]>([]);
 const loading = ref<boolean>(true);
 const searchQuery = ref<string>("");
@@ -59,17 +61,26 @@ const isSearching = computed(() => {
   return debouncedQuery.value.trim().length > 0;
 });
 
+const baseDepartments = computed(() => {
+  if (!favorites.onlyFavorites) {
+    return departments.value;
+  }
+  return departments.value
+    .map((dept) => filterDepartmentByIds(dept, favorites.ids))
+    .filter((dept) => dept !== null);
+});
+
 const filteredDepartments = computed(() => {
   const query = debouncedQuery.value.trim();
   if (query === "") {
-    return departments.value;
+    return baseDepartments.value;
   }
 
-  const allPeople = collectAllPeople(departments.value);
+  const allPeople = collectAllPeople(baseDepartments.value);
   const foundPeople = findMatchingPeople(allPeople, query);
   const ids = new Set(foundPeople.map((i) => i.id));
 
-  return departments.value
+  return baseDepartments.value
     .map((dept) => filterDepartmentByIds(dept, ids))
     .filter((dept) => dept !== null);
 });
@@ -86,9 +97,19 @@ async function loadDepartments() {
   departments.value = await api.get("departments/tree").json<Department[]>();
 }
 
+function resetFilters() {
+  searchQuery.value = "";
+  debouncedQuery.value = "";
+  onlyWithPhone.value = false;
+  showInside.value = true;
+  showOutside.value = true;
+  favorites.onlyFavorites = false;
+}
+
 onMounted(async () => {
   await loadDepartments();
   loading.value = false;
+  await favorites.load();
 });
 
 watch(
@@ -208,6 +229,14 @@ function exportAll() {
                   />
                   <label for="showOutside">{{ t("nincs_bent") }}</label>
                 </div>
+                <div class="flex items-center gap-2">
+                  <Checkbox
+                    v-model="favorites.onlyFavorites"
+                    binary
+                    inputId="onlyFavorites"
+                  />
+                  <label for="onlyFavorites">{{ t("csak_kedvencek") }}</label>
+                </div>
               </div>
             </Popover>
             <Button
@@ -221,6 +250,13 @@ function exportAll() {
           </span>
         </template>
       </DepartmentTree>
+      <div
+        v-else-if="!loading"
+        class="flex flex-col items-center gap-4 p-8 text-center"
+      >
+        <p class="text-lg">{{ t("nincs_talalat") }}</p>
+        <Button :label="t('szuro_visszaallitasa')" @click="resetFilters()" />
+      </div>
     </div>
     <EmployeeFormDialog
       v-model:visible="dialogVisible"

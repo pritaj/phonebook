@@ -31,5 +31,9 @@
   "admin_szerkesztes": "Munkatárs szerkesztése",
   "admin_szerkesztes_gomb": "Szerkesztés",
   "admin_torles": "Törlés",
-  "admin_torles_megerosites": "Biztosan törlöd ezt a munkatársat?"
+  "admin_torles_megerosites": "Biztosan törlöd ezt a munkatársat?",
+  "csak_kedvencek": "Csak kedvencek",
+  "kedvenc": "Kedvenc",
+  "nincs_talalat": "Nincs találat",
+  "szuro_visszaallitasa": "Szűrők visszaállítása"
 }
