@@ -1,5 +1,12 @@
-import { Department } from "../../departments/entities/department.entity";
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Department } from '../../departments/entities/department.entity';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Employee {
@@ -13,21 +20,22 @@ export class Employee {
   firstName: string;
 
   @ManyToOne(() => Department)
-  @JoinColumn({name: 'departmentId'})
+  @JoinColumn({ name: 'departmentId' })
   department: Department;
 
-  @Column({type: 'int'})
+  @Index()
+  @Column({ type: 'int' })
   departmentId: number;
 
-  @Column({type: 'varchar', nullable: true})
+  @Column({ type: 'varchar', nullable: true })
   phone: string | null;
 
-  @Column({type: 'varchar', nullable: true})
+  @Column({ type: 'varchar', nullable: true })
   email: string | null;
 
-  @Column({type: 'varchar', nullable: true})
+  @Column({ type: 'varchar', nullable: true })
   position: string | null;
 
-  @Column({type: 'boolean', default: false})
+  @Column({ type: 'boolean', default: false })
   inside: boolean;
 }
