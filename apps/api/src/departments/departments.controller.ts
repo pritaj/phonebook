@@ -7,16 +7,18 @@ import {
   Param,
   Delete,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { DepartmentsService } from './departments.service';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 import { UpdateDepartmentDto } from './dto/update-department.dto';
-import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Public } from '../auth/public.decorator';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
 
 @Controller('departments')
-@UseGuards(AuthGuard('jwt'), RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class DepartmentsController {
   constructor(private readonly departmentsService: DepartmentsService) {}
 
@@ -31,9 +33,10 @@ export class DepartmentsController {
     return this.departmentsService.findAll();
   }
 
+  @Public()
   @Get('tree')
-  findTree() {
-    return this.departmentsService.findTree();
+  findTree(@Req() req: { user?: unknown }) {
+    return this.departmentsService.findTree(!!req.user);
   }
 
   @Get(':id')

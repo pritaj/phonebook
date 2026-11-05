@@ -26,6 +26,7 @@ import EmployeeFormDialog from "./components/EmployeeFormDialog.vue";
 import { useBreakpoints, breakpointsTailwind } from "@vueuse/core";
 
 const { t } = useI18n();
+const emit = defineEmits<{ login: [] }>();
 const auth = useAuthStore();
 const admin = useAdminStore();
 const favorites = useFavoritesStore();
@@ -109,7 +110,9 @@ function resetFilters() {
 onMounted(async () => {
   await loadDepartments();
   loading.value = false;
-  await favorites.load();
+  if (auth.isAuthenticated) {
+    await favorites.load();
+  }
 });
 
 watch(
@@ -174,12 +177,21 @@ function exportAll() {
           <DarkModeToggle />
           <Divider layout="vertical" class="hidden sm:block" />
           <Button
+            v-if="auth.isAuthenticated"
             :label="t('kilepes')"
             icon="pi pi-sign-out"
             :pt="{ label: { class: 'hidden sm:inline' } }"
             :size="currentButtonSize ?? 'normal'"
             text
             @click="auth.logout()"
+          />
+          <Button
+            v-else
+            :label="t('bejelentkezes')"
+            icon="pi pi-sign-in"
+            :pt="{ label: { class: 'hidden sm:inline' } }"
+            :size="currentButtonSize ?? 'normal'"
+            @click="emit('login')"
           />
         </div>
       </template>
@@ -195,6 +207,7 @@ function exportAll() {
       >
         <template #actions>
           <span
+            v-if="auth.isAuthenticated"
             class="flex flex-nowrap gap-1 ml-2 pointer-events-auto"
             @click.stop
           >

@@ -6,6 +6,7 @@ import { useI18n } from "vue-i18n";
 import { useAuthStore } from "../stores/auth-store/auth-store";
 
 const { t } = useI18n();
+const emit = defineEmits<{ cancel: [] }>();
 const auth = useAuthStore();
 
 const username = ref("");
@@ -58,6 +59,13 @@ async function onSubmit() {
         :label="t('belepes')"
         :loading="submitting"
         :disabled="username === '' || password === ''"
+      />
+      <Button
+        type="button"
+        :label="t('vissza')"
+        severity="secondary"
+        text
+        @click="emit('cancel')"
       />
     </form>
   </div>

@@ -147,7 +147,10 @@ const displayName = computed(() => {
             {{ person.firstName }}
           </template>
           <template #subtitle>
-            <div class="flex items-center justify-between">
+            <div
+              v-if="auth.isAuthenticated"
+              class="flex items-center justify-between"
+            >
               <Tag
                 :value="person.inside ? t('bent_van') : t('nincs_bent')"
                 :severity="person.inside ? 'success' : 'error'"
@@ -166,10 +169,11 @@ const displayName = computed(() => {
             </div>
           </template>
           <template #content>
-            {{ person.phone }}
+            <p>{{ person.position }}</p>
+            <p v-if="auth.isAuthenticated">{{ person.phone }}</p>
           </template>
           <template #footer>
-            <div class="flex gap-1 my-1 h-fit">
+            <div v-if="auth.isAuthenticated" class="flex gap-1 my-1 h-fit">
               <Button
                 :label="t('exp')"
                 fluid
