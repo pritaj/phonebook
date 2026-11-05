@@ -20,9 +20,24 @@ export class DepartmentsService {
     return this.departmentsRepository.find();
   }
 
-  async findTree() {
+  async findTree(isAuthenticated: boolean) {
     const departments = await this.departmentsRepository.find({
-      relations: {employees: true}
+      relations: { employees: true },
+      select: isAuthenticated
+        ? undefined
+        : {
+            id: true,
+            nameHu: true,
+            nameEn: true,
+            parentId: true,
+            employees: {
+              id: true,
+              lastName: true,
+              firstName: true,
+              position: true,
+              departmentId: true,
+            },
+          },
     });
     const byId = new Map<number, Department>();
     departments.forEach((department) => {
@@ -35,7 +50,7 @@ export class DepartmentsService {
         roots.push(department);
       } else {
         const parent = byId.get(department.parentId);
-        if(parent) {
+        if (parent) {
           parent.children.push(department);
         }
       }
