@@ -92,7 +92,7 @@ const displayName = computed(() => {
       <div class="flex items-center gap-2 w-full justify-between">
         <div class="flex items-center gap-2">
           <MaterialIcon :icon="getDepartmentIcon(dept.id)" />
-          {{ dept.id == 1 ? "Example Company Ltd." : displayName }}
+          {{ displayName }}
         </div>
 
         <slot name="actions" />

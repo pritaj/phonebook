@@ -20,33 +20,33 @@ async function seed() {
     nameEn: 'Example Ltd.',
   });
   const createChildDataProd = await departmentsService.create({
-    nameHu: 'Termelés/Production',
+    nameHu: 'Termelés',
     nameEn: 'Production',
     parentId: createDept.id,
   });
   const createAlChildDataMaint = await departmentsService.create({
-    nameHu: 'Karbantartás/Maintenance',
+    nameHu: 'Karbantartás',
     nameEn: 'Maintenance',
     parentId: createChildDataProd.id,
   });
   const createAlChildDataQuality = await departmentsService.create({
-    nameHu: 'Minőségbiztosítás/Quality Assurance',
+    nameHu: 'Minőségbiztosítás',
     nameEn: 'Quality Assurance',
     parentId: createChildDataProd.id,
   });
 
   const createChildDataHR = await departmentsService.create({
-    nameHu: 'Emberi erőforrás/Human Resources',
+    nameHu: 'Emberi erőforrás',
     nameEn: 'Human Resources',
     parentId: createDept.id,
   });
   const createChildDataIT = await departmentsService.create({
-    nameHu: 'Informatika/IT',
+    nameHu: 'Informatika',
     nameEn: 'IT',
     parentId: createDept.id,
   });
   const createChildDataFi = await departmentsService.create({
-    nameHu: 'Pénzügy/Finance',
+    nameHu: 'Pénzügy',
     nameEn: 'Finance',
     parentId: createDept.id,
   });
