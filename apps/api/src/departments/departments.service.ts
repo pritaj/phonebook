@@ -1,4 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  ConflictException,
+} from '@nestjs/common';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 import { UpdateDepartmentDto } from './dto/update-department.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -58,15 +63,36 @@ export class DepartmentsService {
     return roots;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} department`;
+  async findOne(id: number) {
+    const department = await this.departmentsRepository.findOneBy({ id });
+    if (!department) {
+      throw new NotFoundException(`Department #${id} not found`);
+    }
+    return department;
   }
 
-  update(id: number, updateDepartmentDto: UpdateDepartmentDto) {
-    return `This action updates a #${id} department`;
+  async update(id: number, updateDepartmentDto: UpdateDepartmentDto) {
+    const department = await this.findOne(id);
+    if (updateDepartmentDto.parentId === id) {
+      throw new BadRequestException('A department cannot be its own parent');
+    }
+    Object.assign(department, updateDepartmentDto);
+    return this.departmentsRepository.save(department);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} department`;
+  async remove(id: number) {
+    const department = await this.departmentsRepository.findOne({
+      where: { id },
+      relations: { employees: true, children: true },
+    });
+    if (!department) {
+      throw new NotFoundException(`Department #${id} not found`);
+    }
+    if (department.employees.length > 0 || department.children.length > 0) {
+      throw new ConflictException(
+        'A department with employees or sub-departments cannot be deleted',
+      );
+    }
+    await this.departmentsRepository.remove(department);
   }
 }
