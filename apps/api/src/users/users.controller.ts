@@ -5,8 +5,10 @@ import {
   Body,
   Patch,
   Param,
+  Req,
   Delete,
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { UsersService } from './users.service';
@@ -42,7 +44,10 @@ export class UsersController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: string, @Req() req: { user: { userId: number } }) {
+    if (+id === req.user.userId) {
+      throw new BadRequestException('You cannot delete your own account');
+    }
     return this.usersService.remove(+id);
   }
 }

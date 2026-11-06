@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Repository } from 'typeorm';
@@ -15,11 +15,12 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     const passwordHash = await bcrypt.hash(createUserDto.password, 10);
-    return this.usersRepository.save({
+    const user = await this.usersRepository.save({
       username: createUserDto.username,
       passwordHash: passwordHash,
       role: createUserDto.role,
     });
+    return this.toPublic(user);
   }
 
   async findByUsername(username: string) {
@@ -28,19 +29,49 @@ export class UsersService {
     });
   }
 
-  findAll() {
-    return this.usersRepository.find();
+  async findAll() {
+    const users = await this.usersRepository.find();
+    return users.map((user) => this.toPublic(user));
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  private async findEntity(id: number) {
+    const user = await this.usersRepository.findOneBy({ id });
+    if (!user) {
+      throw new NotFoundException(`User #${id} not found`);
+    }
+    return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async findOne(id: number) {
+    const user = await this.findEntity(id);
+    return this.toPublic(user);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const user = await this.findEntity(id);
+    if (updateUserDto.password) {
+      user.passwordHash = await bcrypt.hash(updateUserDto.password, 10);
+    }
+    if (updateUserDto.username !== undefined) {
+      user.username = updateUserDto.username;
+    }
+    if (updateUserDto.role !== undefined) {
+      user.role = updateUserDto.role;
+    }
+    const saved = await this.usersRepository.save(user);
+    return this.toPublic(saved);
+  }
+
+  async remove(id: number) {
+    const user = await this.findEntity(id);
+    await this.usersRepository.remove(user);
+  }
+
+  private toPublic(user: User) {
+    return {
+      id: user.id,
+      username: user.username,
+      role: user.role,
+    };
   }
 }
