@@ -5,6 +5,7 @@ import {
   Body,
   Patch,
   Param,
+  ParseIntPipe,
   Delete,
   UseGuards,
   Req,
@@ -40,14 +41,14 @@ export class DepartmentsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseIntPipe) id: number) {
     return this.departmentsService.findOne(+id);
   }
 
   @Roles('admin')
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateDepartmentDto: UpdateDepartmentDto,
   ) {
     return this.departmentsService.update(+id, updateDepartmentDto);
@@ -55,7 +56,7 @@ export class DepartmentsController {
 
   @Roles('admin')
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.departmentsService.remove(+id);
   }
 }

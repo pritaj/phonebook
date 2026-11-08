@@ -1,9 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { Employee } from './entities/employee.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeepPartial, QueryFailedError, Repository } from 'typeorm';
 
 @Injectable()
 export class EmployeesService {
@@ -13,7 +17,7 @@ export class EmployeesService {
   ) {}
 
   create(createEmployeeDto: CreateEmployeeDto) {
-    return this.employeesRepository.save(createEmployeeDto);
+    return this.saveEmployee(createEmployeeDto);
   }
 
   findAll() {
@@ -31,11 +35,24 @@ export class EmployeesService {
   async update(id: number, updateEmployeeDto: UpdateEmployeeDto) {
     const employee = await this.findOne(id);
     Object.assign(employee, updateEmployeeDto);
-    return this.employeesRepository.save(employee);
+    return this.saveEmployee(employee);
   }
 
   async remove(id: number) {
     const employee = await this.findOne(id);
     await this.employeesRepository.remove(employee);
+  }
+
+  private async saveEmployee(employee: DeepPartial<Employee>) {
+    try {
+      return await this.employeesRepository.save(employee);
+    } catch (error) {
+      const code = (error as { driverError?: { code?: string } }).driverError
+        ?.code;
+      if (error instanceof QueryFailedError && code === '23503') {
+        throw new BadRequestException('Department does not exist');
+      }
+      throw error;
+    }
   }
 }

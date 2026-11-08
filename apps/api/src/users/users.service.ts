@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Repository } from 'typeorm';
@@ -14,6 +18,10 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
+    const existing = await this.findByUsername(createUserDto.username);
+    if (existing) {
+      throw new ConflictException('Username is already taken');
+    }
     const passwordHash = await bcrypt.hash(createUserDto.password, 10);
     const user = await this.usersRepository.save({
       username: createUserDto.username,
@@ -53,6 +61,10 @@ export class UsersService {
       user.passwordHash = await bcrypt.hash(updateUserDto.password, 10);
     }
     if (updateUserDto.username !== undefined) {
+      const existing = await this.findByUsername(updateUserDto.username);
+      if (existing && existing.id !== id) {
+        throw new ConflictException('Username is already taken');
+      }
       user.username = updateUserDto.username;
     }
     if (updateUserDto.role !== undefined) {

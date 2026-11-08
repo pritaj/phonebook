@@ -62,7 +62,7 @@ describe('EmployeesController', () => {
     });
     employeesService.remove.mockResolvedValue(undefined);
 
-    await controller.remove('7', req);
+    await controller.remove(7, req);
 
     expect(employeesService.remove).toHaveBeenCalledWith(7);
     expect(auditService.log).toHaveBeenCalledWith(

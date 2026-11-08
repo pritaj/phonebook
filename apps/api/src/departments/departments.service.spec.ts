@@ -12,6 +12,7 @@ describe('DepartmentsService', () => {
   let service: DepartmentsService;
 
   const repositoryMock = {
+    find: jest.fn(),
     findOneBy: jest.fn(),
     findOne: jest.fn(),
     save: jest.fn(),
@@ -33,6 +34,21 @@ describe('DepartmentsService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+  describe('findTree', () => {
+    it('bejelentkezés nélkül nem kéri le a telefonszámot, az e-mailt és a jelenléti állapotot', async () => {
+      repositoryMock.find.mockResolvedValue([]);
+
+      await service.findTree(false);
+
+      const options = repositoryMock.find.mock.calls[0][0] as {
+        select?: { employees?: Record<string, boolean> };
+      };
+      expect(options.select?.employees).toBeDefined();
+      expect(options.select?.employees).not.toHaveProperty('phone');
+      expect(options.select?.employees).not.toHaveProperty('email');
+      expect(options.select?.employees).not.toHaveProperty('inside');
+    });
   });
 
   describe('findOne', () => {
@@ -69,6 +85,20 @@ describe('DepartmentsService', () => {
       });
 
       await expect(service.update(1, { parentId: 1 })).rejects.toThrow(
+        BadRequestException,
+      );
+      expect(repositoryMock.save).not.toHaveBeenCalled();
+    });
+    it('BadRequestException-t dob, ha az osztályt a saját alosztálya alá tennék', async () => {
+      repositoryMock.findOneBy.mockImplementation(({ id }: { id: number }) =>
+        Promise.resolve(
+          id === 1
+            ? { id: 1, nameHu: 'Termelés', parentId: null }
+            : { id: 2, nameHu: 'Karbantartás', parentId: 1 },
+        ),
+      );
+
+      await expect(service.update(1, { parentId: 2 })).rejects.toThrow(
         BadRequestException,
       );
       expect(repositoryMock.save).not.toHaveBeenCalled();
