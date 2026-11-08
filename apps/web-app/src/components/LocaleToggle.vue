@@ -57,6 +57,7 @@ async function saveLanguage(language: string | null) {
     :options="availableLocales"
     optionLabel="flag"
     v-model="value"
+    :allowEmpty="false"
     @change="saveLanguage($event.value)"
   >
     <template #option="slotprops">
