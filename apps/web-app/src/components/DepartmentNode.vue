@@ -134,12 +134,7 @@ const displayName = computed(() => {
         >
           <template #header>
             <span class="w-full flex items-center justify-center">
-              <MaterialIcon
-                :icon="
-                  person.lastName.includes('Technikai') ? 'group' : 'person'
-                "
-                class="text-[245px]!"
-              />
+              <MaterialIcon icon="person" class="text-[245px]!" />
             </span>
           </template>
           <template #title>
