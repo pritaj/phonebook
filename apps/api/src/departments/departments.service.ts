@@ -8,8 +8,7 @@ import { CreateDepartmentDto } from './dto/create-department.dto';
 import { UpdateDepartmentDto } from './dto/update-department.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Department } from './entities/department.entity';
-import { Repository } from 'typeorm';
-
+import { DeepPartial, QueryFailedError, Repository } from 'typeorm';
 @Injectable()
 export class DepartmentsService {
   constructor(
@@ -18,7 +17,7 @@ export class DepartmentsService {
   ) {}
 
   create(createDepartmentDto: CreateDepartmentDto) {
-    return this.departmentsRepository.save(createDepartmentDto);
+    return this.saveDepartment(createDepartmentDto);
   }
 
   findAll() {
@@ -91,7 +90,7 @@ export class DepartmentsService {
       }
     }
     Object.assign(department, updateDepartmentDto);
-    return this.departmentsRepository.save(department);
+    return this.saveDepartment(department);
   }
 
   async remove(id: number) {
@@ -108,5 +107,18 @@ export class DepartmentsService {
       );
     }
     await this.departmentsRepository.remove(department);
+  }
+
+  private async saveDepartment(department: DeepPartial<Department>) {
+    try {
+      return await this.departmentsRepository.save(department);
+    } catch (error) {
+      const code = (error as { driverError?: { code?: string } }).driverError
+        ?.code;
+      if (error instanceof QueryFailedError && code === '23503') {
+        throw new BadRequestException('Parent department does not exist');
+      }
+      throw error;
+    }
   }
 }
