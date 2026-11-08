@@ -1,14 +1,19 @@
-import { defineStore } from 'pinia';
-import { ref } from 'vue';
-import { api } from '../utils/api';
+import { defineStore } from "pinia";
+import { ref } from "vue";
+import { api } from "../utils/api";
 
-export const useFavoritesStore = defineStore('favorites', () => {
+export const useFavoritesStore = defineStore("favorites", () => {
   const ids = ref<Set<number>>(new Set());
   const onlyFavorites = ref<boolean>(false);
 
   async function load() {
-    const list = await api.get('favorites').json<number[]>();
+    const list = await api.get("favorites").json<number[]>();
     ids.value = new Set(list);
+  }
+
+  function reset() {
+    ids.value = new Set();
+    onlyFavorites.value = false;
   }
 
   function isFavorite(employeeId: number) {
@@ -26,5 +31,5 @@ export const useFavoritesStore = defineStore('favorites', () => {
     ids.value = new Set(ids.value);
   }
 
-  return { ids, onlyFavorites, load, isFavorite, toggle };
+  return { ids, onlyFavorites, load, reset, isFavorite, toggle };
 });

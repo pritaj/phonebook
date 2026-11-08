@@ -2,6 +2,7 @@ import type { UserInfo } from "../auth-store/types/user-info";
 import ky from "ky";
 import { defineStore } from "pinia";
 import { computed, onMounted, ref } from "vue";
+import { useFavoritesStore } from "../favorites-store";
 
 function parseToken(token: string): UserInfo | null {
   try {
@@ -43,6 +44,7 @@ export const useAuthStore = defineStore("auth", () => {
   const logout = () => {
     token.value = null;
     localStorage.removeItem("token");
+    useFavoritesStore().reset();
   };
 
   const adjustTheme = async (value: typeof theme.value) => {
