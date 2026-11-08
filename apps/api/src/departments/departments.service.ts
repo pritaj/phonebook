@@ -76,6 +76,20 @@ export class DepartmentsService {
     if (updateDepartmentDto.parentId === id) {
       throw new BadRequestException('A department cannot be its own parent');
     }
+    if (updateDepartmentDto.parentId) {
+      let ancestorId: number | null = updateDepartmentDto.parentId;
+      while (ancestorId !== null) {
+        if (ancestorId === id) {
+          throw new BadRequestException(
+            'A department cannot be moved under its own sub-department',
+          );
+        }
+        const ancestor = await this.departmentsRepository.findOneBy({
+          id: ancestorId,
+        });
+        ancestorId = ancestor?.parentId ?? null;
+      }
+    }
     Object.assign(department, updateDepartmentDto);
     return this.departmentsRepository.save(department);
   }

@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { NotFoundException } from '@nestjs/common';
+import { ConflictException, NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
@@ -61,6 +61,19 @@ describe('UsersService', () => {
       );
       expect(result).toEqual({ id: 1, username: 'anna', role: 'user' });
     });
+  });
+
+  it('ConflictException-t dob, ha a felhasználónév már foglalt', async () => {
+    repositoryMock.findOne.mockResolvedValue(existingUser());
+
+    await expect(
+      service.create({
+        username: 'anna',
+        password: 'titkos1234',
+        role: 'user',
+      }),
+    ).rejects.toThrow(ConflictException);
+    expect(repositoryMock.save).not.toHaveBeenCalled();
   });
 
   describe('findByUsername', () => {

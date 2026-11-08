@@ -5,6 +5,7 @@ import {
   Body,
   Patch,
   Param,
+  ParseIntPipe,
   Delete,
   UseGuards,
   Req,
@@ -50,14 +51,14 @@ export class EmployeesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseIntPipe) id: number) {
     return this.employeesService.findOne(+id);
   }
 
   @Roles('admin')
   @Patch(':id')
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateEmployeeDto: UpdateEmployeeDto,
     @Req() req: RequestWithUser,
   ) {
@@ -74,7 +75,10 @@ export class EmployeesController {
 
   @Roles('admin')
   @Delete(':id')
-  async remove(@Param('id') id: string, @Req() req: RequestWithUser) {
+  async remove(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req: RequestWithUser,
+  ) {
     const employee = await this.employeesService.findOne(+id);
     await this.employeesService.remove(+id);
     await this.auditService.log(

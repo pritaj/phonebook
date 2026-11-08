@@ -5,6 +5,7 @@ import {
   Body,
   Patch,
   Param,
+  ParseIntPipe,
   Req,
   Delete,
   UseGuards,
@@ -34,17 +35,23 @@ export class UsersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
     return this.usersService.update(+id, updateUserDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string, @Req() req: { user: { userId: number } }) {
+  remove(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req: { user: { userId: number } },
+  ) {
     if (+id === req.user.userId) {
       throw new BadRequestException('You cannot delete your own account');
     }
